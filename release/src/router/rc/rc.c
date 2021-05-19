@@ -13,9 +13,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
-#ifdef HND_ROUTER
 #include <limits.h>
-#endif
 
 #ifdef RTCONFIG_RALINK
 #include <ralink.h>
@@ -32,6 +30,21 @@
 #if defined(RTCONFIG_SOC_IPQ8074)
 #include <sys/vfs.h>
 #include <inttypes.h>
+#include <sys/reboot.h>
+#endif
+
+#if defined(K3)
+#include "k3.h"
+#elif defined(R7900P) || defined(R8000P)
+#include "r7900p.h"
+#elif defined(K3C)
+#include "k3c.h"
+#elif defined(SBRAC1900P)
+#include "ac1900p.h"
+#elif defined(SBRAC3200P)
+#include "ac3200p.h"
+#else
+#include "merlinr.h"
 #endif
 
 #ifndef ARRAYSIZE
@@ -1115,6 +1128,7 @@ static const applets_t applets[] = {
 	{ "usbled",			usbled_main			},
 #endif
 	{ "ddns_updated", 		ddns_updated_main		},
+	{ "ddns_custom_updated",	ddns_custom_updated_main	},
 	{ "radio",			radio_main			},
 	{ "udhcpc",			udhcpc_wan			},
 	{ "udhcpc_lan",			udhcpc_lan			},
@@ -1184,7 +1198,11 @@ static const applets_t applets[] = {
 #endif
 	{ "firmware_check",		firmware_check_main		},
 #if defined(RTCONFIG_FRS_LIVE_UPDATE)
+#if defined(MERLINR_VER_MAJOR_B) || defined(MERLINR_VER_MAJOR_R) || defined(MERLINR_VER_MAJOR_X)
+	{ "firmware_check_update",	merlinr_firmware_check_update_main	},
+#else
 	{ "firmware_check_update",	firmware_check_update_main	},
+#endif
 #endif
 #ifdef RTAC68U
 	{ "firmware_enc_crc",		firmware_enc_crc_main		},
@@ -2025,6 +2043,12 @@ int main(int argc, char **argv)
 		_start_telnetd(1);
 		return 0;
 	}
+#if defined(K3)
+	else if(!strcmp(base, "k3screen")) {
+		start_k3screen();
+		return 0;
+	}
+#endif
 #ifdef RTCONFIG_SSH
 	else if (!strcmp(base, "run_sshd")) {
 		start_sshd();
@@ -2384,3 +2408,4 @@ int main(int argc, char **argv)
 	printf("Unknown applet: %s\n", base);
 	return 0;
 }
+

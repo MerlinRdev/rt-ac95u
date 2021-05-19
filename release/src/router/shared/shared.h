@@ -2059,6 +2059,8 @@ extern int discover_interface(const char *current_wan_ifname, int dhcp_det);
 extern int discover_all(int wan_unit);
 
 // strings.c
+extern int replace_char(char *str, const char from, const char to);
+extern int str_escape_quotes(const char *output, const char *input, int outsize);
 extern int char_to_ascii_safe(const char *output, const char *input, int outsize);
 extern void char_to_ascii(const char *output, const char *input);
 #if defined(RTCONFIG_UTF8_SSID)
@@ -2072,6 +2074,7 @@ extern int remove_word(char *buffer, const char *word);
 extern void trim_space(char *str);
 extern void toLowerCase(char *str);
 extern void toUpperCase(char *str);
+extern void trim_colon(char *str);
 
 /* ethtool.c */
 extern int iface_exist(const char *iface);
@@ -2269,6 +2272,12 @@ extern int isValidEnableOption(const char* option, int range);
 extern int isValid_digit_string(const char *string);
 extern int is_valid_hostname(const char *name);
 extern int is_valid_domainname(const char *name);
+
+/* scripts.c */
+extern void run_custom_script(char *name, int timeout, char *arg1, char *arg2);
+extern void run_postconf(char *name, char *config);
+extern void use_custom_config(char *config, char *target);
+extern void append_custom_config(char *config, FILE *fp);
 
 /* mt7620.c */
 #if defined(RTCONFIG_RALINK_MT7620)
@@ -2996,3 +3005,4 @@ extern int wl_set_mcsindex(char *ifname, int *is_auto, int *idx, char *idx_type,
 extern int amazon_wss_ap_isolate_support(char *prefix);
 
 #endif	/* !__SHARED_H__ */
+

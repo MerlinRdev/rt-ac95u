@@ -71,12 +71,8 @@ ifeq ($(RTN14U),y)
 CFLAGS += -DBAND_2G_ONLY
 endif
 
-ifeq ($(RTN14U)$(RTAC52U)$(RTAC51U)$(RTN11P)$(RTN300)$(RTN54U)$(RTAC1200HP)$(RTN56UB1)$(RTN56UB2)$(RTAC54U)$(RTAC1200)$(RTAC1200V2)$(RTAC1200GA1)$(RTAC1200GU),y)
+ifeq ($(RTN14U)$(RTAC52U)$(RTAC51U)$(RTN11P)$(RTN300)$(RTN54U)$(RTAC1200HP)$(RTN56UB1)$(RTN56UB2)$(RTAC54U)$(RTAC1200)$(RTAC1200GA1)$(RTAC1200GU),y)
 CFLAGS += -DRA_ESW
-endif
-
-ifeq ($(BUILD_NAME), RT-AC1200_V2)
-CFLAGS += -DRTAC1200V2
 endif
 
 ifeq ($(RTCONFIG_DNSMASQ),y)
@@ -102,6 +98,14 @@ endif
 
 ifeq ($(or $(RTAC68A),$(RT4GAC68U)),y)
 CFLAGS += -DRTAC68U
+endif
+
+ifeq ($(RTCONFIG_CAPTCHA),y)
+CFLAGS += -DCAPTCHA
+endif
+
+ifneq ($(findstring CONFIG_BCM_KF_NETFILTER=, $(shell cat $(LINUXDIR)/.config)),)
+export CFLAGS += -DBCM_KF_NETFILTER
 endif
 
 OBJS = httpd.o cgi.o ej.o 
@@ -149,11 +153,20 @@ ifeq ($(RTCONFIG_HTTPS),y)
 OBJS += $(if $(wildcard pwenc.c), pwenc.o, prebuild/pwenc.o)
 endif
 
+OBJS += sysinfo.o
+OBJS += merlinr.o
+ifeq ($(RTCONFIG_SOFTCENTER),y)
+OBJS += dbapi.o
+endif
+ifeq ($(RTCONFIG_CAPTCHA),y)
+OBJS += libcaptcha.o
+endif
+
 OBJS += $(if $(wildcard web_hook.c), web_hook.o, prebuild/web_hook.o)
 
-LIBS = -L$(TOP)/nvram${BCMEX}$(EX7) -lnvram -L$(TOP)/shared -lshared
+LIBS = -L$(TOP_PLATFORM)/nvram${BCMEX}$(EX7) -lnvram -L$(TOP)/shared -lshared
 ifeq ($(HND_ROUTER),y)
-LIBS += -L$(TOP)/wlcsm -lwlcsm
+LIBS += -L$(TOP_PLATFORM)/wlcsm -lwlcsm
 endif
 
 # for ceil()
@@ -167,6 +180,12 @@ endif
 ifeq ($(RTCONFIG_BCMARM),y)
 CFLAGS += -I$(SRCBASE)/shared/bcmwifi/include -DTYPEDEF_FLOAT_T
 CFLAGS += -I$(SRCBASE)/common/include
+ifeq ($(HND_ROUTER_AX),y)
+CFLAGS += -DWL11AC_80P80 -DWL11AC_160
+CFLAGS += -I$(SRCBASE)/../components/wlioctl/include -I$(SRCBASE)/../components/proto/include
+CFLAGS += -I$(SRCBASE)/wl/sys
+CFLAGS += -I$(SRCBASE)/../../43684/src/wl/sys
+endif
 LIBS += -lgcc_s
 ifeq ($(RTCONFIG_QTN),y)
 CFLAGS += -I$(TOP)/libqcsapi_client -I$(TOP)/shared/sysdeps/qtn
@@ -258,6 +277,7 @@ LIBS += -L $(TOP)/sqlCipher/.libs -lsqlcipher
 endif
 
 ifeq ($(RTCONFIG_CFGSYNC),y)
+CFLAGS += -I$(TOP)/shared/sysdeps/amas
 CFLAGS += -I$(TOP)/cfg_mnt
 LIBS += -L$(TOP)/cfg_mnt -lcfgmnt
 endif
@@ -277,6 +297,17 @@ LIBS += -L$(TOP)/libpasswd -lpasswd
 
 ifeq ($(RTCONFIG_LANTIQ),y)
 LIBS += -L$(TOP)/fapi_wlan_common-05.04.00.131 -lfapiwlancommon -ldl -L$(TOP)/libhelper-1.4.0.2 -lhelper -L$(TOP)/libfapi-0.1 -lfapi -L$(TOP)/wireless_tools/ -liw
+endif
+
+ifeq ($(RTCONFIG_LIBASUSLOG),y)
+CFLAGS += -I$(TOP)/libasuslog
+LIBS += -L$(TOP)/libasuslog -lasuslog
+endif
+ifeq ($(RTCONFIG_HND_ROUTER_AX_6710),y)
+CFLAGS +=-DRTCONFIG_HND_ROUTER_AX_6710
+endif
+ifeq ($(RTCONFIG_HND_ROUTER_AX_675X),y)
+CFLAGS +=-DRTCONFIG_HND_ROUTER_AX_675X
 endif
 
 all: httpd #test_apps
@@ -325,3 +356,4 @@ endif
 	@$(CC) $(CFLAGS) -M $< > $@
 
 -include $(OBJS:%.o=.%.depend)
+

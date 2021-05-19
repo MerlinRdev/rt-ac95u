@@ -2032,3 +2032,11 @@ config RTCONFIG_AMAZON_WSS
 config RTCONFIG_QCA_MCSD
 	bool "Use qca-mcs for multicast packets"
 	default n
+
+config RTCONFIG_SOFTCENTER
+	bool "softcenter"
+	default n
+
+config RTCONFIG_SMARTDNS
+	bool "smart dns"
+	default n

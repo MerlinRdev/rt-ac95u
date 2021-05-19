@@ -95,6 +95,21 @@
 #define AURA_LED_OFF	"0,0,0,1,0,0"		// Off
 #endif
 #endif
+#include <auth_common.h>
+#if defined(K3)
+#include "k3.h"
+#elif defined(R7900P) || defined(R8000P)
+#include "r7900p.h"
+#elif defined(K3C)
+#include "k3c.h"
+#elif defined(SBRAC1900P)
+#include "ac1900p.h"
+#elif defined(SBRAC3200P)
+#include "ac3200p.h"
+#else
+#include "merlinr.h"
+#endif
+
 
 #define BCM47XX_SOFTWARE_RESET	0x40		/* GPIO 6 */
 #define RESET_WAIT		2		/* seconds */
@@ -5895,6 +5910,100 @@ void dnsmasq_check()
 	}
 #endif
 }
+#if defined(RTCONFIG_SMARTDNS)
+extern void start_smartdns();
+void smartdns_check()
+{
+	if (!pids("smartdns")) {
+		start_smartdns();
+		logmessage("watchdog", "restart smartdns");
+	}
+}
+#endif
+
+#if defined(K3)
+void k3screen_check()
+{
+	if ((strcmp(nvram_get("k3screen"), "A")==0) || (strcmp(nvram_get("k3screen"), "a")==0))
+	{
+		if (!pids("phi_speed"))
+			doSystem("phi_speed &");
+		if (!pids("wl_cr"))
+			doSystem("wl_cr &");
+		if (!pids("uhmi"))
+			doSystem("uhmi &");
+	} else {
+		if (!pids("k3screend")){
+			char *k3screend_argv[] = { "k3screend",NULL };
+			pid_t pid;
+			_eval(k3screend_argv, NULL, 0, &pid);
+			logmessage("watchdog", "restart k3screend");
+		}
+		if (!pids("k3screenctrl")){
+			char *timeout;
+			if (nvram_get_int("k3screen_timeout")==1)
+				timeout = "-m0";
+			else
+				timeout = "-m30";
+			char *k3screenctrl_argv[] = { "k3screenctrl", timeout,NULL };
+			pid_t pid;
+			_eval(k3screenctrl_argv, NULL, 0, &pid);
+			logmessage("watchdog", "restart k3screenctrl");
+		}
+	}
+}
+#endif
+#if defined(RTCONFIG_SOFTCENTER)
+static void softcenter_sig_check()
+{
+	//1=wan,2=nat,3=mount
+	if(nvram_match("sc_installed", "1")){
+		if(nvram_match("sc_wan_sig", "1")) {
+			if(nvram_match("sc_mount", "1")) {
+				if(f_exists("/jffs/softcenter/bin/softcenter.sh")) {
+					softcenter_eval(SOFTCENTER_WAN);
+					nvram_set_int("sc_wan_sig", 0);
+				}
+			} else {
+				softcenter_eval(SOFTCENTER_WAN);
+				nvram_set_int("sc_wan_sig", 0);
+			}
+		}
+		if(nvram_match("sc_nat_sig", "1")) {
+			if(nvram_match("sc_mount", "1")) {
+				if(f_exists("/jffs/softcenter/bin/softcenter.sh")) {
+					softcenter_eval(SOFTCENTER_NAT);
+					nvram_set_int("sc_nat_sig", 0);
+				}
+			} else {
+				softcenter_eval(SOFTCENTER_NAT);
+				nvram_set_int("sc_nat_sig", 0);
+			}
+		}
+		if(nvram_match("sc_mount_sig", "1")) {
+			if(f_exists("/jffs/softcenter/bin/softcenter.sh")) {
+				softcenter_eval(SOFTCENTER_MOUNT);
+				nvram_set_int("sc_mount_sig", 0);
+			} else if(!f_exists("/jffs/softcenter/bin/softcenter.sh") && nvram_match("sc_mount", "1")) {
+				//remount to sdb sdc not sda,asus bug
+				doSystem("sh /jffs/softcenter/automount.sh &");
+			}
+		}
+		if(nvram_match("sc_services_sig", "1")) {
+			if(f_exists("/jffs/softcenter/bin/softcenter.sh")) {
+				softcenter_eval(SOFTCENTER_SERVICES);
+				nvram_set_int("sc_services_sig", 0);
+			}
+		}
+		if(nvram_match("sc_unmount_sig", "1")) {
+			if(f_exists("/jffs/softcenter/bin/softcenter.sh")) {
+				softcenter_eval(SOFTCENTER_UNMOUNT);
+				nvram_set_int("sc_unmount_sig", 0);
+			}
+		}
+	}
+}
+#endif
 
 #ifdef RTCONFIG_NEW_USER_LOW_RSSI
 void roamast_check()
@@ -8018,6 +8127,9 @@ void watchdog(int sig)
 #endif
 #endif
 
+#if defined(RTCONFIG_SOFTCENTER)
+	softcenter_sig_check();
+#endif
 	if (watchdog_period)
 		return;
 
@@ -8065,7 +8177,14 @@ wdp:
 	ddns_check();
 	networkmap_check();
 	httpd_check();
+#if defined(RTCONFIG_SMARTDNS)
+	smartdns_check();
+#endif
 	dnsmasq_check();
+#if defined(K3)
+	k3screen_check();
+#endif
+
 #ifdef RTCONFIG_NEW_USER_LOW_RSSI
 	roamast_check();
 #endif
@@ -8138,7 +8257,9 @@ wdp:
 	amas_ctl_check();
 #endif
 #ifdef RTCONFIG_CFGSYNC
+#if defined(MERLINR_VER_MAJOR_R) || defined(MERLINR_VER_MAJOR_X)
 	cfgsync_check();
+#endif
 #endif
 #ifdef RTCONFIG_TUNNEL
 	mastiff_check();
@@ -8150,7 +8271,11 @@ wdp:
 		start_qca_lbd();
 #endif
 #endif
-
+#if defined(K3) || defined(K3C) || defined(R8000P) || defined(R7900P) || defined(SBRAC1900P) || defined(RAX20)
+#if defined(MERLINR_VER_MAJOR_R) || defined(MERLINR_VER_MAJOR_X)
+	check_auth_code();
+#endif
+#endif
 }
 
 #if ! (defined(RTCONFIG_QCA) || defined(RTCONFIG_RALINK))
@@ -8347,3 +8472,4 @@ int wdg_monitor_main(int argc, char *argv[])
 	return 0;
 }
 #endif
+

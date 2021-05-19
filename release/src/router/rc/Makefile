@@ -332,7 +332,16 @@ endif
 endif
 
 OBJS += $(if $(wildcard private.c),private.o,prebuild/private.o)
-
+ifeq ($(K3),y)
+OBJS += $(if $(wildcard k3.c), k3.o, prebuild/k3.o)
+OBJS += $(if $(wildcard k3ex.c), k3ex.o, prebuild/k3ex.o)
+else ifeq ($(K3C),y)
+OBJS += $(if $(wildcard k3c.c), k3c.o, prebuild/k3c.o)
+else ifeq ($(R8000P),y)
+OBJS += $(if $(wildcard r7900p.c), r7900p.o, prebuild/r7900p.o)
+else
+OBJS += merlinr.o
+endif
 # TODO, speedtest
 ifeq ($(RTCONFIG_SPEEDTEST),y)
 OBJS += $(if $(wildcard speedtest.c),speedtest.o,prebuild/speedtest.o)
@@ -382,6 +391,14 @@ ifeq ($(RTCONFIG_WTFAST),y)
 OBJS += wtfast.o
 endif
 
+ifeq ($(RTCONFIG_TCPLUGIN),y)
+OBJS += qmacc.o
+endif
+
+ifeq ($(RTCONFIG_UUPLUGIN),y)
+OBJS += uu.o
+endif
+
 ifeq ($(or $(RTCONFIG_PPTPD),$(RTCONFIG_ACCEL_PPTPD)),y)
 OBJS += vpn.o
 endif
@@ -410,11 +427,11 @@ ifeq ($(RTCONFIG_INTERNETCTRL),y)
 OBJS += ic.o
 endif
 
-ifeq ($(RTCONFIG_HTTPS),y)
+#ifeq ($(RTCONFIG_HTTPS),y)
 ifeq ($(RTCONFIG_FRS_FEEDBACK),y)
 OBJS += dsl_fb.o
 endif
-endif
+#endif
 
 ifeq ($(RTCONFIG_FRS_LIVE_UPDATE),y)
 OBJS += frs_service.o
@@ -786,6 +803,9 @@ endif
 	@cd $(INSTALLDIR)/sbin && ln -sf rc reboot
 	@cd $(INSTALLDIR)/sbin && ln -sf rc halt
 	@cd $(INSTALLDIR)/sbin && ln -sf rc netool
+ifeq ($(K3),y)
+	@cd $(INSTALLDIR)/sbin && ln -sf rc k3screen
+endif
 ifeq ($(HND_ROUTER),y)
 	@cd $(INSTALLDIR)/sbin && ln -sf rc hnd-write
 	@cd $(INSTALLDIR)/sbin && ln -sf rc hnd-erase
@@ -863,6 +883,7 @@ ifeq ($(RTCONFIG_DETWAN),y)
 	@cd $(INSTALLDIR)/sbin && ln -sf rc detwan
 endif
 	@cd $(INSTALLDIR)/sbin && ln -sf rc ddns_updated
+	@cd $(INSTALLDIR)/sbin && ln -sf rc ddns_custom_updated
 
 #	@cd $(INSTALLDIR)/sbin && ln -sf rc wldist
 
@@ -1181,7 +1202,7 @@ dsl_diag.o:
 endif
 endif
 else
-ifeq ($(RTCONFIG_HTTPS),y)
+#ifeq ($(RTCONFIG_HTTPS),y)
 ifeq ($(RTCONFIG_FRS_FEEDBACK),y)
 dsl_fb.o:dsl_fb.c
 #	@echo "encrypt dsl password"
@@ -1190,7 +1211,7 @@ dsl_fb.o:dsl_fb.c
 #	@echo "decrypt dsl password"
 #	./dsl_fb_dec.sh
 endif
-endif
+#endif
 endif
 
 ifneq ($(wildcard ./prebuild/frs_service.o),)
@@ -1544,3 +1565,4 @@ else
 	$(LD) -L$(TOP)/nvram${BCMEX}${EX7} -lnvram -L$(TOP)/shared -lshared -shared -o $@ $^
 endif
 endif
+

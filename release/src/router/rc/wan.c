@@ -53,7 +53,11 @@
 #include <stdarg.h>
 
 #include <linux/types.h>
+#if !defined(__GLIBC__) && !defined(__UCLIBC__) /* musl */
+#include <netinet/if_ether.h>		//have to in front of <linux/ethtool.h> to avoid redefinition of 'struct ethhdr'
+#endif
 #include <linux/ethtool.h>
+#include <limits.h>		//PATH_MAX, LONG_MIN, LONG_MAX
 
 #ifdef RTCONFIG_USB
 #include <disk_io_tools.h>
@@ -733,6 +737,11 @@ void update_wan_state(char *prefix, int state, int reason)
 	else if(state == WAN_STATE_STOPPING) {
 		snprintf(tmp, sizeof(tmp), "/var/run/ppp-wan%d.status", unit);
 		unlink(tmp);
+	}
+	else if (state == WAN_STATE_CONNECTED) {
+		sprintf(tmp,"%c",prefix[3]);
+		run_custom_script("wan-start", 0, tmp, NULL);
+		nvram_set_int("sc_wan_sig", 1);
 	}
 }
 
@@ -2106,6 +2115,18 @@ int update_resolvconf(void)
 		fclose(fp);
 		goto error;
 	}
+#if defined(RTCONFIG_SMARTDNS)
+	FILE *fp_smartdns;
+	if (!(fp_smartdns = fopen("/tmp/resolv.smartdns", "w+"))) {
+		perror("/tmp/resolv.smartdns");
+		fclose(fp);
+		fclose(fp_servers);
+		goto error;
+	}
+	fprintf(fp_smartdns, "server=127.0.0.1#9053\n");
+	fclose(fp_smartdns);
+	start_smartdns();
+#endif
 
 	{
 		for (unit = WAN_UNIT_FIRST; unit < WAN_UNIT_MAX; unit++) {

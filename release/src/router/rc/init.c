@@ -19,6 +19,7 @@
 #include <time.h>
 #include <errno.h>
 #include <paths.h>
+#include <strings.h>
 #include <sys/wait.h>
 #include <sys/reboot.h>
 #include <sys/klog.h>
@@ -76,6 +77,20 @@
 
 #ifdef RTCONFIG_ISP_CUSTOMIZE
 #include <sys/statfs.h>
+#endif
+
+#if defined(K3C)
+#include "k3c.h"
+#elif defined(K3)
+#include "k3.h"
+#elif defined(SBRAC1900P)
+#include "1900p.h"
+#elif defined(SBRAC3200P)
+#include "3200p.h"
+#elif defined(R7900P) || defined(R8000P)
+#include "r7900p.h"
+#else
+#include "merlinr.h"
 #endif
 
 #define SHELL "/bin/sh"
@@ -4883,6 +4898,7 @@ int init_nvram(void)
 
 #if defined(RTAC95U)
 	case MODEL_RTAC95U:
+        merlinr_init();
 		nvram_set("boardflags", "0x100"); // although it is not used in ralink driver, set for vlan
 		nvram_set("lan_ifname", "br0");
 		wl_ifaces[WL_2G_BAND] = "ath0";
@@ -11888,6 +11904,14 @@ dbg("boot/continue fail= %d/%d\n", nvram_get_int("Ate_boot_fail"),nvram_get_int(
 #ifndef RTCONFIG_LANTIQ
 			nvram_set("success_start_service", "1");
 			force_free_caches();
+#endif
+
+#if defined(K3)
+			k3_init_done();
+#elif defined(R7900P)||defined(R8000P)
+			r8000p_init_done();
+#else
+			merlinr_init_done();
 #endif
 
 #ifdef RTCONFIG_AMAS
