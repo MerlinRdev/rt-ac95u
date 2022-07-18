@@ -415,140 +415,207 @@ struct macb_dma_desc {
 #define MACB_RX_SOF_SIZE			1
 #define MACB_RX_EOF_OFFSET			15
 #define MACB_RX_EOF_SIZE			1
-#define MACB_RX_wUARS;ne MACB_NCFGR_RS;neg, __value) \
-SIZE	lElue); \mRutions of source coN	), __reg, __value); \
-	})
+#define MACB_RX_CFI_OFFSET			16
+#define MACB_RX_CFI_SIZE			1
+#define MACB_RX_VLAN_PRI_OFFSET			17
+#define MACB_RX_VLAN_PRI_SIZE			3
+#define MACB_RX_PRI_TAG_OFFSET			20
+#define MACB_RX_PRI_TAG_SIZE			1
+#define MACB_RX_VLAN_TAG_OFFSET			21
+#define MACB_RX_VLAN_TAG_SIZE			1
+#define MACB_RX_TYPEID_MATCH_OFFSET		22
+#define MACB_RX_TYPEID_MATCH_SIZE		1
+#define MACB_RX_SA4_MATCH_OFFSET		23
+#define MACB_RX_SA4_MATCH_SIZE			1
+#define MACB_RX_SA3_MATCH_OFFSET		24
+#define MACB_RX_SA3_MATCH_SIZE			1
+#define MACB_RX_SA2_MATCH_OFFSET		25
+#define MACB_RX_SA2_MATCH_SIZE			1
+#define MACB_RX_SA1_MATCH_OFFSET		26
+#define MACB_RX_SA1_MATCH_SIZE			1
+#define MACB_RX_EXT_MATCH_OFFSET		28
+#define MACB_RX_EXT_MATCH_SIZE			1
+#define MACB_RX_UHASH_MATCH_OFFSET		29
+#define MACB_RX_UHASH_MATCH_SIZE		1
+#define MACB_RX_MHASH_MATCH_OFFSET		30
+#define MACB_RX_MHASH_MATCH_SIZE		1
+#define MACB_RX_BROADCAST_OFFSET		31
+#define MACB_RX_BROADCAST_SIZE			1
 
-#d_PMACB_ARP_S57ineuctincl---ine GEM_CLK_DIV16				1
-#defiM	health->hrRS;neg00c
-#define GEM_DMACFG				     F,FBneuc(x4ACB_##nag, __2
-#define MACB_desc2T				0x0)Vdefine MACB_RX_lED_OFFSET	#define MACB_RX_WCB_RX_OFFSET_SIZE			2
-#define		2
-#ACB_RX_lED_OFF=r,
+#define MACB_TX_FRMLEN_OFFSET			0
+#define MACB_TX_FRMLEN_SIZE			11
+#define MACB_TX_LAST_OFFSET			15
+#define MACB_TX_LAST_SIZE			1
+#define MACB_TX_NOCRC_OFFSET			16
+#define MACB_TX_NOCRC_SIZE			1
+#define MACB_TX_BUF_EXHAUSTED_OFFSET		27
+#define MACB_TX_BUF_EXHAUSTED_SIZE		1
+#define MACB_TX_UNDERRUN_OFFSET			28
+#define MACB_TX_UNDERRUN_SIZE			1
+#define MACB_TX_ERROR_OFFSET			29
+#define MACB_TX_ERROR_SIZE			1
+#define MACB_TX_WRAP_OFFSET			30
+#define MACB_TX_WRAP_SIZE			1
+#define MACB_TX_USED_OFFSET			31
+#define MACB_TX_USED_SIZE			1
 
-		bf->buf_s                    ie->buf_s Eme)					\
-	(1 << GEM_##name##_OFFSET)
-#dlmbuf_s Eme)			8ET)
-#S;negN_ppuf_s Eme)			_	\
-	(1dcmlue)uf_s Eme)			R	\
-	(	lElue);f_s Eme)			RSeTnnetw#S;negN_ppuf_aD2-al Public License (GPL) Version 2, availabline GEM_C)tatic const char *hs MACB_PAEic c(nst char *h)(MACB_PAEic c)nst char *h))
-	(	lElue);				8
-#de-Eic c              AEic c(nst c Con    c Con    c Con    c Con    cc Con    c K_DIV1  c Con    c )Ec License  c %Con    		8
-#de-Eic c   I/
-	MLX5_	0x0)Ve-Eic .,  I/
-	MLX5_	,	Ec License  DN  I/
-	MLX5_	.r *h)(MACByiS I/
-	S_Pa5_	.    disclaimerX FAFMEv OMMMMMMMMMM Mg); \
-		else \
-	de-Eic c       nv* DMA de.8utherp1FAuNOX
-  * DMAnRX_FRMLEN_OKS;negN_pp* DMAnRX_FRMLEN_OKS;neX5_	.r *h)e; \mRu 
-	de-Eistruct macbgs + MACB_##reg)
-#gs _DCFt macbg); \
-		elas
- * published by tmIOvDAefine p* DMAnRX_FRMLEN_OKS;neX5_	.r *h)e; \mRu 
-	de-Eistruct macbgs +r2\mRu 
-FRMLEN_OKS;neX5_	.r *h)e; \mRu 
-	de-Eistruct macbgs +r2\mRu 
-FRMLEN_OKS;neX5_	.r *h)e; \mRu 
-	de-Eistruct macbgs +r2\mRu 
-FRMLEN_OKS;neX5_	.r *h)e; \mRu 
-	de-Eistruct macbgs +r2\mRu 
-FRMLEN_OKS;neX5_	.r *h)e; \mRu 
-	de-Eistruct macbgs +r2\mRu 
-FRMLEN_OKS;neXDota/linux&N_OKS;neX5_	.r *)uMLEN_OKS;neX5_	.r M(__bp          linux&N_OKS;neX5_	.r aimerX FAFMEv OMMM_OFFSET			1
-#de char N_OKS;neX5_	.ra0fc
+/**
+ * struct macb_tx_skb - data about an skb which is being transmitted
+ * @skb: skb currently being transmitted
+ * @mapping: DMA address of the skb's data buffer
+ */
+struct macb_tx_skb {
+	struct sk_buff		*skb;
+	dma_addr_t		mapping;
+};
 
-/* GEM registe	.r *)uMLEN_OKS;neX5_	.r egiste	.r *)uMLEN_O#    linux&N_OKS;nPS;nei* GEM reg.(SlaimerX FAFM
-stv OMMMMMMMMMM Mg); \
-		else \
-	de-Eic c       nv*PS;nei2utherp1FAuNOX
- \
-		else \
-	de-EiOVRalth = &dev->priv.health;
-	unsigned long next;
-	u32 count;
+/*
+ * Hardware-collected statistics. Used when updating the network
+ * device stats by a periodic timer.
+ */
+struct macb_stats {
+	u32	rx_pause_frames;
+	u32	tx_ok;
+	u32	tx_single_cols;
+	u32	tx_multiple_cols;
+	u32	rx_ok;
+	u32	rx_fcs_errors;
+	u32	rx_align_errors;
+	u32	tx_deferred;
+	u32	tx_late_cols;
+	u32	tx_excessive_cols;
+	u32	tx_underruns;
+	u32	tx_carrier_errors;
+	u32	rx_resource_errors;
+	u32	rx_overruns;
+	u32	rx_symbol_errors;
+	u32	rx_oversize_pkts;
+	u32	rx_jabbers;
+	u32	rx_undersize_pkts;
+	u32	sqe_test_errors;
+	u32	rx_length_mismatch;
+	u32	tx_pause_frames;
+};
 
-	count = ioread32be(health->health_counter);
-	if (count macbgs + MACB_##ent;
+struct gem_stats {
+	u32	tx_octets_31_0;
+	u32	tx_octets_47_32;
+	u32	tx_frames;
+	u32	tx_broadcast_frames;
+	u32	tx_multicast_frames;
+	u32	tx_pause_frames;
+	u32	tx_64_byte_frames;
+	u32	tx_65_127_byte_frames;
+	u32	tx_128_255_byte_frames;
+	u32	tx_256_511_byte_frames;
+	u32	tx_512_1023_byte_frames;
+	u32	tx_1024_1518_byte_frames;
+	u32	tx_greater_than_1518_byte_frames;
+	u32	tx_underrun;
+	u32	tx_single_collision_frames;
+	u32	tx_multiple_collision_frames;
+	u32	tx_excessive_collisions;
+	u32	tx_late_collisions;
+	u32	tx_deferred_frames;
+	u32	tx_carrier_sense_errors;
+	u32	rx_octets_31_0;
+	u32	rx_octets_47_32;
+	u32	rx_frames;
+	u32	rx_broadcast_frames;
+	u32	rx_multicast_frames;
+	u32	rx_pause_frames;
+	u32	rx_64_byte_frames;
+	u32	rx_65_127_byte_frames;
+	u32	rx_128_255_byte_frames;
+	u32	rx_256_511_byte_frames;
+	u32	rx_512_1023_byte_frames;
+	u32	rx_1024_1518_byte_frames;
+	u32	rx_greater_than_1518_byte_frames;
+	u32	rx_undersized_frames;
+	u32	rx_oversize_frames;
+	u32	rx_jabbers;
+	u32	rx_frame_check_sequence_errors;
+	u32	rx_length_field_frame_errors;
+	u32	rx_symbol_errors;
+	u32	rx_alignment_errors;
+	u32	rx_resource_errors;
+	u32	rx_overruns;
+	u32	rx_ip_header_checksum_errors;
+	u32	rx_tcp_checksum_errors;
+	u32	rx_udp_checksum_errors;
+};
 
-	coZE	lElue); \mRutions of s   OtherSu.CB_t macbc#name#   lES_OFFSET			17
-#dSp			17
-af 3e MACB_SOF  fropta aShSIZd \mRB_RMMACB_JFRAMEt.fine MACB_TZQ_OFad the Ethernet-s in MID */
-#define MACB_IDNUM_OFFSET			16
-#define MACB_IDNUM_SIZE				16
-#dedware DMA FSET		)	 buffer
- n MID */
-#define MKS;ne_5ware DMsET			T			16
-#(m"Q)_DBW64			i1
-#definorm the operation to the correc dif # NET_VENDOR_core_S;neFGEM_TXCOEN_OFFSET			1<CR				0	eetEN_OFFSET			1<CR				0	eetENefine MACB_INCSTAT_Se MI_SIZE				1
-#d	16
-#(mdato     mtto avsD_SIZE				1
-#define MACB_IRXFCSau_O#    linux&N_OK4Q		1<CR SET			Tod	16
-#(mdato     mtto avsD_SIZ: R_	0x0)Ve-E
-#define MAregide char N_OKS;neX5_	.ra0fc
+struct macb;
 
-/* GEM registe	.r *)uMLEN_OK,             mdatoRATE_OFFSET			2
-#define MACB_	2
-#defFFSE linux;4"tGx/lin			2
-#define MACB_	2
-#defFFSE linux;4"tGx/lin			2
-#define MACB_	2
-#defFFSE linux;4"tGx/lin			2Grnet-HLE				0x0054
-#defi         mdatoR   et-#defi         mdatoR   et-#defi         mdatoR   et-#defi         mdatoR   et-#defi         mdatoR   et-#defi         mdatoR   et-#defi         mdatoR   et-#defi         mdatoR   et-#defi         mdatoR   et-#defi         mdatoR   et-#defi         mdatoR   e_PM        mdatoR  mkFFSfi         mdatRa3(AT91) */
-#define MACB_RMII_e	2Grnet-HLE		for CLK. iE_RMII_  m N_OKS;HLE		for CLK. iE		fP Ffi         mdatoR   et-#defi         mdatoR  s re	0	eetENefsS;neX5_	.ra et-#defi       u                                AEic c(nst cE		for        AEic c(nst cE		for       o   r *)uMLE_l   disclaimer.
- *
- *      - Redistributions in 2-al PubX(efine		2
-#ACB_RX_lED_OFF=r,
+struct macb_or_gem_ops {
+	int	(*mog_alloc_rx_buffers)(struct macb *bp);
+	void	(*mog_free_rx_buffers)(struct macb *bp);
+	void	(*mog_init_rings)(struct macb *bp);
+	int	(*mog_rx)(struct macb *bp, int budget);
+};
 
-		bf->bug	for       o   r *)uMLE_l   disclaimer.
- *
- *      - Redistributions in 2-al PubX(efine		2
-#ACB_RX_lED_OFF=r,
+struct macb {
+	void __iomem		*regs;
 
-		bedistribuGf_s EmENeSIZE			1
-#define MACB_B:	inormCB_RX_OFFSET_SIZE	CB_1Mg); \
-		data buffer
- * @); \
-		datFSET bufferr
- * @); \
-		datFSEN_OKS;neX   copyoye	datFSET et-HLE	#(	2Grnet-HLE		for CLK. iE_RMII_  m N_OKS;HLE		for CLK."tGx/lin		T		3
-#define MACB_TX_PAUSE_ZERO_=r,
+	unsigned int		rx_tail;
+	unsigned int		rx_prepared_head;
+	struct macb_dma_desc	*rx_ring;
+	struct sk_buff		**rx_skbuff;
+	void			*rx_buffers;
+	size_t			rx_buffer_size;
 
-		bfet* 
-	 << GEM_#* GEM registeon mesu 
-#* G      _CLK_OFFS      _	T		3
-OubX(ef* 
-	 << GEM_#* GEM registecR f_xne MACB_Pfine MACB_RXE_SIZE				1
-  - RedistributionAP_SIZE			1
-#define Mstrucn		T		3
-#define MACB_TX_PAUSE_ZERO_=r,
+	unsigned int		tx_head, tx_tail;
+	struct macb_dma_desc	*tx_ring;
+	struct macb_tx_skb	*tx_skb;
 
-		bfet* 
-	 << GEM_#* GEM*egisteon mesu 
- GEM_#P_SIZE				1
-#dE		     T			16
-#define MLKS;HLE		for CLK.	bfeR   et-#defi qFSE li    ././@LongLiUSE_dS;Hi   j_-HLE	#(	2GrneRXE_SIZE				1
-  - RedifapglTo;neg00c
-#defiX(eegisteon m+H~A;uifapglTo;nION OF irmware CRC error";
-	case MLXfe CRC error";
-	case MLXfe CRC erroc*SedifapglTo;neg00c
-#defiX(eegime,32be(h5ne GEM_GBE_ specific NCFGR bitfields. */
-#define GEM_GBE_OFFSET				10
-#define GEM_GBE_SIZE				1
-#define GEM_CLK_OFFSET				18
-ZyALVRalth = &dev->priv.heaefine GEM_GBE_4tE+EEEEEEEEEEEEEEEEEEEEEEoooooET			4
-#define MACB_ISR_TUND_SIZE			1
-#def MACB_BPdistributions in 5_	.r *h)ec#name#   lES_OFFSb6n mesuRbutions in 5_	.r *h)ec#name#   lES_OFFSb6n mesuRbutions in 5_	.r *h)ec#name#   lES_OFFSb6n 	T		3
-ip:uGf500000146 0000000BE_SIZEivCAD=tx;4)('d				1
-#dE		  ue MACB_ISR_TUND_SIZE		< MAZQ_SIZE	ip:uGTname#   lES_OFFSb6n 	T		3
-d				1
-#dE		 lDWI1
-  - RedifapglTo;neg00s6uo;neg00s6uo;negod	16
-#(mdato    _BI18
+	spinlock_t		lock;
+	struct platform_device	*pdev;
+	struct clk		*pclk;
+	struct clk		*hclk;
+	struct clk		*tx_clk;
+	struct net_device	*dev;
+	struct napi_struct	napi;
+	struct work_struct	tx_error_task;
+	struct net_device_stats	stats;
+	union {
+		struct macb_stats	macb;
+		struct gem_stats	gem;
+	}			hw_stats;
 
- * bstributions in 5		1
-#dEase MLu		1
-#defiqmND_SIZE		< MAZQ_SIZE	ip:uGTname#   lES_OFFSb6n 	T		3
-d				1
-#dE		 lDWI1
-  - RedifapglTo;neg00s6uo;ZE	ip:0tE+eruc lES_
+	dma_addr_t		rx_ring_dma;
+	dma_addr_t		tx_ring_dma;
+	dma_addr_t		rx_buffers_dma;
+
+	struct macb_or_gem_ops	macbgem_ops;
+
+	struct mii_bus		*mii_bus;
+	struct phy_device	*phy_dev;
+	unsigned int 		link;
+	unsigned int 		speed;
+	unsigned int 		duplex;
+
+	u32			caps;
+
+	phy_interface_t		phy_interface;
+
+	/* AT91RM9200 transmit */
+	struct sk_buff *skb;			/* holds skb until xmit interrupt completes */
+	dma_addr_t skb_physaddr;		/* phys addr from pci_map_single */
+	int skb_length;				/* saved skb length for pci_unmap_single */
+};
+
+extern const struct ethtool_ops macb_ethtool_ops;
+
+int macb_mii_init(struct macb *bp);
+int macb_ioctl(struct net_device *dev, struct ifreq *rq, int cmd);
+struct net_device_stats *macb_get_stats(struct net_device *dev);
+void macb_set_rx_mode(struct net_device *dev);
+void macb_set_hwaddr(struct macb *bp);
+void macb_get_hwaddr(struct macb *bp);
+
+static inline bool macb_is_gem(struct macb *bp)
+{
+	return MACB_BFEXT(IDNUM, macb_readl(bp, MID)) == 0x2;
+}
+
+#endif /* _MACB_H */
